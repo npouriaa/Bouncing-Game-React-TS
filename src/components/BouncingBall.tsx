@@ -2,14 +2,27 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 const BouncingBall = () => {
-  const [position, setPosition] = useState(500);
+  const [position, setPosition] = useState<number>(500);
+  const [timeoutId, setTimeoutId] = useState<number>(0);
 
   const handleTap = () => {
     setPosition((prev) => Math.max(prev - 50));
-    console.log(position);
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    const newTimeoutId = window.setTimeout(() => {
+      setPosition(500);
+    }, 200);
+
+    setTimeoutId(newTimeoutId);
   };
 
   const handleDropBall = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
     setPosition(500);
   };
 
@@ -31,23 +44,3 @@ const BouncingBall = () => {
 };
 
 export default BouncingBall;
-
-// import { useState } from "react";
-// import { motion } from "framer-motion";
-
-// const BouncingBall = () => {
-//   const [fall, setFall] = useState(false);
-
-//   return (
-//     <>
-//       <motion.div
-//         className="ball"
-//         initial={{ y: 0 }}
-//         animate={{ y: fall ? 300 : 0 }}
-//         transition={{ type: "spring", stiffness: 50, damping: 10 }}
-//       />
-//     </>
-//   );
-// };
-
-// export default BouncingBall;
