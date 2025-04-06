@@ -12,9 +12,8 @@ const BouncingBall = () => {
     x: 0,
     y: 500,
   });
-  const [boxPos] = useState<PosType>({ x: 0, y: -165 });
+  const [boxPos] = useState<PosType>({ x: 0, y: -170 });
 
-  const [isSqueezed, setIsSqueezed] = useState<boolean>(false);
   const velocityRef = useRef<number>(0);
   const animationFrameRef = useRef<number | null>(null);
 
@@ -68,13 +67,8 @@ const BouncingBall = () => {
   }, [ballPos.y, boxPos.y]);
 
   const handleTap = () => {
-    setIsSqueezed(true);
     velocityRef.current = -20;
     setBallPos((prev) => ({ ...prev, y: prev.y - 1 }));
-
-    setTimeout(() => {
-      setIsSqueezed(false);
-    }, 300);
   };
 
   return (
@@ -84,7 +78,6 @@ const BouncingBall = () => {
         animate={{
           x: ballPos.x,
           y: ballPos.y,
-          scaleX: isSqueezed ? 1.4 : 1,
         }}
       />
       <motion.div
