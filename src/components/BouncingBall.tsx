@@ -1,67 +1,77 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { System, Box } from "detect-collisions";
+
+type PosType = {
+  x: number;
+  y: number;
+};
 
 const BouncingBall = () => {
-  // State to track the vertical position of the ball
-  const [position, setPosition] = useState<number>(500);
+  const [ballPos, setBallPos] = useState<PosType>({
+    x: 0,
+    y: 500,
+  });
+  const [boxPos] = useState<PosType>({ x: 0, y: -165 });
 
-  // State to track whether the ball is squeezed (wider when tapped)
   const [isSqueezed, setIsSqueezed] = useState<boolean>(false);
-
-  // Ref to store the ball's velocity (speed of movement)
   const velocityRef = useRef<number>(0);
-
-  // Ref to store the animation frame ID (used to cancel animation when needed)
   const animationFrameRef = useRef<number | null>(null);
 
-  // Gravity force applied to the ball, increased for faster falling
   const gravity = 2;
-
-  // Bounce factor controls how much energy is retained after bouncing
   const bounceFactor = 0.8;
+  const groundLevel = 500;
 
   useEffect(() => {
-    // Function to update the ball's position
     const updatePosition = () => {
-      setPosition((prev) => {
-        let newVelocity = velocityRef.current + gravity; // Apply gravity to increase downward speed
-        let newPos = prev + newVelocity; // Update the ball's position
+      setBallPos((prev) => {
+        let newVelocity = velocityRef.current + gravity;
+        let newY = prev.y + newVelocity;
 
-        // Check if the ball has reached the ground (y = 500)
-        if (newPos >= 500) {
-          newPos = 500; // Keep the ball at ground level
-          newVelocity = -newVelocity * bounceFactor; // Reverse velocity with reduced energy (bounce effect)
+        if (newY >= groundLevel) {
+          newY = groundLevel;
+          newVelocity = -newVelocity * bounceFactor;
         }
 
-        velocityRef.current = newVelocity; // Store the updated velocity for the next frame
-        return newPos; // Update the state with the new position
+        velocityRef.current = newVelocity;
+        return { ...prev, y: newY };
       });
 
-      // Request the next animation frame to keep updating the ball's position
       animationFrameRef.current = requestAnimationFrame(updatePosition);
     };
 
-    // Start the animation loop only if the ball is moving (not at ground level)
-    if (position < 500) {
+    if (ballPos.y < groundLevel) {
       animationFrameRef.current = requestAnimationFrame(updatePosition);
     }
 
-    // Cleanup function: cancel animation when component unmounts or when position changes
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [position]); // Runs when `position` changes
+  }, [ballPos.y]);
 
-  // Function to handle user tap event
+  useEffect(() => {
+    const system = new System();
+    const ball = new Box(ballPos, 24, 24);
+    const box = new Box(boxPos, 100, 3);
+
+    system.insert(ball);
+    system.insert(box);
+
+    const response = system.checkCollision(ball, box);
+
+    if (response) {
+      setBallPos({ y: 500, x: 0 });
+      console.log("Collision detected!");
+    }
+  }, [ballPos.y, boxPos.y]);
+
   const handleTap = () => {
-    setIsSqueezed((prev) => !prev); // Toggle the squeezed effect (ball width increases)
+    setIsSqueezed(true);
+    velocityRef.current = -20;
+    setBallPos((prev) => ({ ...prev, y: prev.y - 1 }));
 
-    velocityRef.current = -20; // Give the ball an initial upward push
-    setPosition((prev) => prev - 1); // Move the ball slightly up to trigger movement
-
-    // Reset the squeezed effect after 300ms (ball returns to normal width)
     setTimeout(() => {
       setIsSqueezed(false);
     }, 300);
@@ -71,9 +81,19 @@ const BouncingBall = () => {
     <div className="container" onClick={handleTap}>
       <motion.div
         className="ball"
-        animate={{ y: position, scaleX: isSqueezed ? 1.4 : 1 }} // Squeeze effect when tapped
-        transition={{ type: "spring", stiffness: 300, damping: 15 }} // Smooth bounce animation
+        animate={{
+          x: ballPos.x,
+          y: ballPos.y,
+          scaleX: isSqueezed ? 1.4 : 1,
+        }}
       />
+      <motion.div
+        animate={{
+          x: boxPos.x,
+          y: 100,
+        }}
+        className="obstacle"
+      ></motion.div>
     </div>
   );
 };

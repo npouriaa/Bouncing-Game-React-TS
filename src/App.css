@@ -12,14 +12,26 @@ body {
   align-items: flex-start;
   height: 100vh;
   width: 100vw;
+  position: relative;
 }
 
 .ball {
+  z-index: 1000;
   width: 2rem;
   height: 2rem;
   background-color: red;
   border-radius: 50%;
   position: absolute;
   top: 10rem;
-  transition: width 0.2s ease;
+}
+
+.obstacle {
+  background-color: blue;
+  width: 100px;
+  height: 3px;
+  position: absolute;
+}
+
+P {
+  color: #FFF;
 }
