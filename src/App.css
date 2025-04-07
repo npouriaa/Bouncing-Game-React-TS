@@ -32,6 +32,13 @@ body {
   position: absolute;
 }
 
+.obstacle.red {
+  background-color: red;
+  width: 100px;
+  height: 3px;
+  position: absolute;
+}
+
 P {
   color: #FFF;
 }
