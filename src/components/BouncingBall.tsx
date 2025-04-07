@@ -11,12 +11,12 @@ const BouncingBall = () => {
   // State to track the position of the ball
   const [ballPos, setBallPos] = useState<PosType>({
     x: 0,
-    y: 500, // Initial position of the ball (on the ground)
+    y: 550, // Initial position of the ball (on the ground)
   });
   
   // State to track the position of the obstacles
-  const [boxPos, setBoxPos] = useState<PosType>({ x: -50, y: -170 });
-  const [box2Pos, setBox2Pos] = useState<PosType>({ x: 53, y: -170 });
+  const [boxPos, setBoxPos] = useState<PosType>({ x: -50, y: -60 });
+  const [box2Pos, setBox2Pos] = useState<PosType>({ x: 53, y: -60 });
 
   // Ref to store the ball's velocity (speed of movement)
   const velocityRef = useRef<number>(0);
@@ -27,7 +27,7 @@ const BouncingBall = () => {
   // Constants for gravity and bounce behavior
   const gravity = 2;
   const bounceFactor = 0.8;
-  const groundLevel = 500;
+  const groundLevel = 550;
 
   // Effect to update the ball's position based on gravity and bouncing
   useEffect(() => {
@@ -93,8 +93,8 @@ const BouncingBall = () => {
       const amplitude = 70;  // Define how much the obstacles move left-right
       const speed = 0.05;    // Define speed of oscillation
 
-      const center1 = -55;   // Starting position of the first obstacle (box)
-      const center2 = 55;    // Starting position of the second obstacle (box2)
+      const center1 = -52;   // Starting position of the first obstacle (box)
+      const center2 = 52;    // Starting position of the second obstacle (box2)
 
       const offset = Math.sin(angle) * amplitude; // Calculate the offset based on sine wave
 
@@ -133,7 +133,7 @@ const BouncingBall = () => {
       <motion.div
         animate={{
           x: boxPos.x,
-          y: 100,
+          y: 200,
         }}
         className="obstacle"
       />
@@ -141,7 +141,7 @@ const BouncingBall = () => {
       <motion.div
         animate={{
           x: box2Pos.x,
-          y: 100,
+          y: 200,
         }}
         className="obstacle red"
       />

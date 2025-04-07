@@ -1,12 +1,11 @@
 import "./App.css";
 import BouncingBall from "./components/BouncingBall";
-// import Game from "./components/Game";
 
 const App = () => {
   return (
     <>
+      <div className="finish-line"></div>
       <BouncingBall />
-      {/* <Game /> */}
     </>
   );
 };

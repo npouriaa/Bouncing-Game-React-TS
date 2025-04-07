@@ -42,3 +42,12 @@ body {
 P {
   color: #FFF;
 }
+
+.finish-line {
+  background-image: url(./assets/finish-line.jpg);
+  background-size: contain;
+  top: 3rem;
+  width: 100%;
+  height: 2rem;
+  position: absolute;
+}
